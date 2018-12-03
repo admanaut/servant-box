@@ -1,26 +1,16 @@
-{-# LANGUAGE DataKinds       #-}
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE TypeOperators   #-}
-
 module Server where
 
-import Data.Aeson.TH
-import Data.Aeson
+import Reminders    as R
 import Network.Wai
 import Servant
 
-data Pong = Pong
-
-server :: Server API
-server = return Pong
-
-type API
-  = "ping" :> Get '[JSON] Pong
+type Api = R.API
 
 api :: Proxy API
 api = Proxy
 
+server :: Server API
+server = R.handler
+
 app :: Application
 app = serve api server
-
-deriveJSON defaultOptions ''Pong
