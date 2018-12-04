@@ -6,10 +6,12 @@ module Reminders where
 
 import Data.Aeson.TH
 import Data.Aeson
+import Data.Maybe         (isJust)
 import Data.Time.Clock    as T
 import Data.Time.Calendar as T
 import Data.Text          (Text)
 import Servant
+import Safe               (headMay)
 
 import Prelude     hiding (repeat)
 
@@ -72,18 +74,21 @@ type API
   =    "reminders" :> Get '[JSON] [WithId Reminder]
   :<|> "reminder"  :> ReqBody '[JSON] Reminder :> Post '[JSON] [WithId Reminder]
   :<|> "reminder"  :> Capture "id" Integer :> DeleteNoContent '[JSON] NoContent
+  :<|> "reminder"  :> Capture "id" Integer :> ReqBody '[JSON] Reminder :> Put '[JSON] Reminder
 
 handler :: Server API
 handler = getReminders
   :<|> postReminder
   :<|> deleteReminder
+  :<|> putReminder
 
   where
     getReminders :: Handler [WithId Reminder]
     getReminders = pure defaultReminders
 
     postReminder :: Reminder -> Handler [WithId Reminder]
-    postReminder r = pure (r' : defaultReminders)
+    postReminder r
+      = pure (r' : defaultReminders)
       where
         r' = WithId nextId r
         nextId =
@@ -92,8 +97,32 @@ handler = getReminders
           $ (\(WithId id _) -> id) <$> defaultReminders
 
     deleteReminder :: Integer -> Handler NoContent
-    deleteReminder id = pure NoContent -- TODO
+    deleteReminder id
+      = if found
+          then pure NoContent
+          else throwError err404
+      where
+        found = isJust (findReminder id)
 
+    findReminder :: Integer -> Maybe (WithId Reminder)
+    findReminder id
+      = headMay $
+        dropWhile (\(WithId id' _) -> id' /= id) defaultReminders
+
+    putReminder :: Integer -> Reminder -> Handler Reminder
+    putReminder id r
+      = maybe
+          (throwError err404)
+          (pure . updateReminder)
+          (findReminder id)
+      where
+        updateReminder (WithId _ r')
+          = r' { title    = title r
+               , onADay   = onADay r
+               , repeat   = repeat r
+               , priority = priority r
+               , note     = note r
+               }
 -- }}} Api
 
 deriveJSON defaultOptions ''Repeat

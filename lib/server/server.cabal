@@ -30,3 +30,4 @@ executable server
                      , text
                      , optparse-applicative
                      , time
+                     , safe

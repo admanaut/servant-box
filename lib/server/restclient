@@ -1,0 +1,61 @@
+# -*- restclient -*-
+#
+# Emacs restclient file.
+#
+
+#
+# GET reminders
+#
+GET http://localhost:8080/reminders
+
+#
+# Create new reminder
+#
+POST http://localhost:8080/reminder
+Content-Type: application/json
+
+{
+  "title": "Wake Up",
+  "onADay": "2019-10-15T00:06:30Z",
+  "repeat": "Weekly",
+  "priority": "High",
+  "note": null
+}
+
+#
+# Fail to delete reminder (404)
+#
+DELETE http://localhost:8080/reminder/1003
+
+#
+# Delete reminder
+#
+DELETE http://localhost:8080/reminder/1001
+
+#
+# Update reminder
+#
+PUT http://localhost:8080/reminder/1001
+Content-Type: application/json
+
+{
+  "title": "Buy bread",
+  "onADay": "2019-10-14T00:18:30Z",
+  "repeat": "Daily",
+  "priority": "High",
+  "note": "skimmed"
+}
+
+#
+# Fail to update reminder
+#
+PUT http://localhost:8080/reminder/1005
+Content-Type: application/json
+
+{
+  "title": "Buy bread",
+  "onADay": "2019-10-14T00:18:30Z",
+  "repeat": "Daily",
+  "priority": "High",
+  "note": "skimmed"
+}

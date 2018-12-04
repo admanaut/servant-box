@@ -16,10 +16,19 @@ In this repo I want to create a very simple REST API using [servant-server](http
 And finally host the API and Swagger UI in Heroku.
 
 ## Servant server
-TODO
+A simple REST API built with servant-client.
 
 ## Servant swagger
 TODO
 
 ## Servant quickcheck
 TODO
+
+## Build
+
+Run `stack build` to build all packages in this project.
+
+See README files in each package for more info.
+
+### Run
+TODO - a top level command that orchestrates all packages.
