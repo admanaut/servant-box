@@ -2,3 +2,4 @@ resolver: lts-12.20
 
 packages:
 - location: lib/server
+- location: lib/client

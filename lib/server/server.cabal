@@ -10,6 +10,24 @@ build-type:          Simple
 cabal-version:       >=1.10
 extra-source-files:  README.md
 
+library
+  hs-source-dirs:      src
+  exposed-Modules:     Server
+                     , Reminders
+  default-extensions:  RecordWildCards
+                     , LambdaCase
+                     , OverloadedStrings
+
+  build-depends:       base
+                     , servant
+                     , servant-server
+                     , aeson
+                     , wai
+                     , warp
+                     , text
+                     , time
+                     , safe
+
 executable server
   hs-source-dirs:      src
   default-extensions:  RecordWildCards
@@ -21,7 +39,7 @@ executable server
                      , Server
                      , Reminders
 
-  build-depends:       base >= 4.7 && < 5
+  build-depends:       base
                      , servant
                      , servant-server
                      , aeson
