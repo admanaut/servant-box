@@ -22,6 +22,7 @@ executable client
                      , server
 
                      , either
+                     , http-client
                      , servant-client
                      , servant
                      , servant-server
