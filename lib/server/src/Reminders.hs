@@ -4,14 +4,14 @@
 
 module Reminders where
 
-import Data.Aeson.TH
 import Data.Aeson
+import Data.Aeson.TH
 import Data.Maybe         (isJust)
-import Data.Time.Clock    as T
-import Data.Time.Calendar as T
 import Data.Text          (Text)
-import Servant
+import Data.Time.Calendar as T
+import Data.Time.Clock    as T
 import Safe               (headMay)
+import Servant
 
 import Prelude     hiding (repeat)
 
@@ -51,12 +51,12 @@ defaultReminders :: [WithId Reminder]
 defaultReminders =
   [  WithId 1001 $
        Reminder
-        { title    = "Buy bread"
-        , onADay   = T.UTCTime (T.fromGregorian 2019 10 14) (T.secondsToDiffTime 540)
-        , repeat   = NoRepeat
-        , priority = Medium
-        , note     = Nothing
-        }
+         { title    = "Buy bread"
+         , onADay   = T.UTCTime (T.fromGregorian 2019 10 14) (T.secondsToDiffTime 540)
+         , repeat   = NoRepeat
+         , priority = Medium
+         , note     = Nothing
+         }
 
   , WithId 1002 $
       Reminder
@@ -73,8 +73,8 @@ defaultReminders =
 type API
   =    "reminders" :> Get '[JSON] [WithId Reminder]
   :<|> "reminder"  :> ReqBody '[JSON] Reminder :> Post '[JSON] [WithId Reminder]
-  :<|> "reminder"  :> Capture "id" Integer :> DeleteNoContent '[JSON] NoContent
-  :<|> "reminder"  :> Capture "id" Integer :> ReqBody '[JSON] Reminder :> Put '[JSON] Reminder
+  :<|> "reminder"  :> Capture "id" Integer :> Delete '[JSON] [WithId Reminder]
+  :<|> "reminder"  :> Capture "id" Integer :> ReqBody '[JSON] Reminder :> Put '[JSON] [WithId Reminder]
 
 handler :: Server API
 handler = getReminders
@@ -96,33 +96,38 @@ handler = getReminders
           $ maximum
           $ (\(WithId id _) -> id) <$> defaultReminders
 
-    deleteReminder :: Integer -> Handler NoContent
+    deleteReminder :: Integer -> Handler [WithId Reminder]
     deleteReminder id
-      = if found
-          then pure NoContent
-          else throwError err404
-      where
-        found = isJust (findReminder id)
+      = case splitRemindersAt id of
+         (_, [])      -> throwError err404
+         (xs, (_:ys)) -> pure (xs <> ys)
 
     findReminder :: Integer -> Maybe (WithId Reminder)
     findReminder id
       = headMay $
         dropWhile (\(WithId id' _) -> id' /= id) defaultReminders
 
-    putReminder :: Integer -> Reminder -> Handler Reminder
+    putReminder :: Integer -> Reminder -> Handler [WithId Reminder]
     putReminder id r
-      = maybe
-          (throwError err404)
-          (pure . updateReminder)
-          (findReminder id)
+      = case splitRemindersAt id of
+          (_, []) -> throwError err404
+          (xs, (r':ys)) -> pure (xs <> [updateReminder r'] <> ys)
       where
-        updateReminder (WithId _ r')
-          = r' { title    = title r
-               , onADay   = onADay r
-               , repeat   = repeat r
-               , priority = priority r
-               , note     = note r
-               }
+        updateReminder (WithId id r')
+          = WithId id $
+              r' { title    = title r
+                 , onADay   = onADay r
+                 , repeat   = repeat r
+                 , priority = priority r
+                 , note     = note r
+                 }
+
+    splitRemindersAt id
+      = let idEq = \(WithId id' _) -> id' /= id
+        in ( takeWhile idEq defaultReminders
+           , dropWhile idEq defaultReminders
+           )
+
 -- }}} Api
 
 deriveJSON defaultOptions ''Repeat

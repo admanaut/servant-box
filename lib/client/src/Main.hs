@@ -1,16 +1,16 @@
 module Main where
 
-import           Servant.Client
-import           Server
-import           Reminders
-import           Servant
 import qualified Data.Time           as T
 import qualified Network.HTTP.Client as HTTP
+import           Reminders
+import           Servant
+import           Servant.Client
+import           Server
 
 getReminders :: ClientM [WithId Reminder]
 postReminder :: Reminder -> ClientM [WithId Reminder]
-deleteReminder :: Integer -> ClientM NoContent
-putReminder :: Integer -> Reminder -> ClientM Reminder
+deleteReminder :: Integer -> ClientM [WithId Reminder]
+putReminder :: Integer -> Reminder -> ClientM [WithId Reminder]
 getReminders :<|> postReminder :<|> deleteReminder :<|> putReminder
   = client api
 
@@ -28,9 +28,9 @@ main = do
   where
     newReminder =
       Reminder
-       { title    = "Wake up"
-       , onADay   = T.UTCTime (T.fromGregorian 2019 11 14) (T.secondsToDiffTime 540)
-       , repeat   = NoRepeat
-       , priority = High
-       , note     = Nothing
-       }
+        { title    = "Wake up"
+        , onADay   = T.UTCTime (T.fromGregorian 2019 11 14) (T.secondsToDiffTime 540)
+        , repeat   = NoRepeat
+        , priority = High
+        , note     = Nothing
+        }
