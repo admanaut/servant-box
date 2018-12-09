@@ -16,10 +16,11 @@ In this repo I want to create a very simple REST API using [servant-server](http
 And finally host the API and Swagger UI in Heroku.
 
 ## Servant server
-A simple REST API built with servant-server.
+A REST API (unauthenticated) built with servant-server.
 
 ## Servant client
-TODO
+Using server-client we generate all API functions and package them under
+an easy to use library ready to be distributed to consumers.
 
 ## Servant swagger
 TODO
