@@ -1,29 +1,17 @@
 module Main where
 
-import qualified Data.Time           as T
-import qualified Network.HTTP.Client as HTTP
+import           Client
+import qualified Data.Time as T
 import           Reminders
-import           Servant
-import           Servant.Client
 import           Server
-
-getReminders :: ClientM [WithId Reminder]
-postReminder :: Reminder -> ClientM [WithId Reminder]
-deleteReminder :: Integer -> ClientM [WithId Reminder]
-putReminder :: Integer -> Reminder -> ClientM [WithId Reminder]
-getReminders :<|> postReminder :<|> deleteReminder :<|> putReminder
-  = client api
 
 main :: IO ()
 main = do
-  baseUrl <- parseBaseUrl "http://localhost:8080"
-  manager <- HTTP.newManager HTTP.defaultManagerSettings
-  let env = mkClientEnv manager baseUrl
-
-  print =<< runClientM getReminders env
-  print =<< runClientM (postReminder newReminder) env
-  print =<< runClientM (deleteReminder 1001) env
-  print =<< runClientM (putReminder 1001 newReminder) env
+  let url = "http://localhost:8080"
+  print =<< listReminders url
+  print =<< createReminder url newReminder
+  print =<< removeReminder url 1001
+  print =<< updateReminder url 1001 newReminder
 
   where
     newReminder =
