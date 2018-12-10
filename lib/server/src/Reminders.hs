@@ -1,19 +1,21 @@
 {-# LANGUAGE DataKinds       #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeOperators   #-}
+{-# LANGUAGE DeriveGeneric   #-}
 
 module Reminders where
 
 import Data.Aeson
 import Data.Aeson.TH
-import Data.Maybe         (isJust)
-import Data.Text          (Text)
+import Data.Maybe (isJust)
+import Data.Text (Text)
 import Data.Time.Calendar as T
-import Data.Time.Clock    as T
-import Safe               (headMay)
+import Data.Time.Clock as T
+import GHC.Generics
+import Safe (headMay)
 import Servant
 
-import Prelude     hiding (repeat)
+import Prelude hiding (repeat)
 
 data Repeat
   = Daily
@@ -21,14 +23,14 @@ data Repeat
   | Monthly
   | Yearly
   | NoRepeat
-  deriving (Eq, Show)
+  deriving (Eq, Show, Generic)
 
 data Priority
   = Low
   | Medium
   | High
   | NoPriority
-  deriving (Eq, Show)
+  deriving (Eq, Show, Generic)
 
 data Reminder
   = Reminder
@@ -38,14 +40,14 @@ data Reminder
       , priority :: !Priority
       , note     :: !(Maybe Text)
       }
-  deriving (Eq, Show)
+  deriving (Eq, Show, Generic)
 
 data WithId a
   = WithId
       { id    :: Integer
       , value :: a
       }
-  deriving (Eq, Show)
+  deriving (Eq, Show, Generic)
 
 defaultReminders :: [WithId Reminder]
 defaultReminders =
