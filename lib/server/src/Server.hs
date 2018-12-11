@@ -1,16 +1,19 @@
+{-# LANGUAGE TypeOperators   #-}
+
 module Server where
 
-import Reminders    as R
+import Reminders
+import Swagger
 import Network.Wai
 import Servant
 
-type Api = R.API
+type API = RemindersAPI :<|> SwaggerAPI
 
 api :: Proxy API
 api = Proxy
 
 server :: Server API
-server = R.handler
+server = reminders :<|> swagger
 
 app :: Application
 app = serve api server

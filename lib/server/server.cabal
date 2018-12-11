@@ -40,6 +40,9 @@ executable server
                      , Reminders
 
   build-depends:       base
+                     , lens
+                     , servant-swagger
+                     , swagger2
                      , servant
                      , servant-server
                      , aeson

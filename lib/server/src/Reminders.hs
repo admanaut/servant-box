@@ -72,14 +72,14 @@ defaultReminders =
 
 -- {{{ API
 
-type API
+type RemindersAPI
   =    "reminders" :> Get '[JSON] [WithId Reminder]
   :<|> "reminder"  :> ReqBody '[JSON] Reminder :> Post '[JSON] [WithId Reminder]
   :<|> "reminder"  :> Capture "id" Integer :> Delete '[JSON] [WithId Reminder]
   :<|> "reminder"  :> Capture "id" Integer :> ReqBody '[JSON] Reminder :> Put '[JSON] [WithId Reminder]
 
-handler :: Server API
-handler = getReminders
+reminders :: Server RemindersAPI
+reminders = getReminders
   :<|> postReminder
   :<|> deleteReminder
   :<|> putReminder
