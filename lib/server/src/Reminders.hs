@@ -78,6 +78,9 @@ type RemindersAPI
   :<|> "reminder"  :> Capture "id" Integer :> Delete '[JSON] [WithId Reminder]
   :<|> "reminder"  :> Capture "id" Integer :> ReqBody '[JSON] Reminder :> Put '[JSON] [WithId Reminder]
 
+remindersApi :: Proxy RemindersAPI
+remindersApi = Proxy
+
 reminders :: Server RemindersAPI
 reminders = getReminders
   :<|> postReminder

@@ -14,11 +14,15 @@ library
   hs-source-dirs:      src
   exposed-Modules:     Server
                      , Reminders
+                     , Swagger
   default-extensions:  RecordWildCards
                      , LambdaCase
                      , OverloadedStrings
 
   build-depends:       base
+                     , lens
+                     , servant-swagger
+                     , swagger2
                      , servant
                      , servant-server
                      , aeson
@@ -38,6 +42,7 @@ executable server
   other-modules:       Options
                      , Server
                      , Reminders
+                     , Swagger
 
   build-depends:       base
                      , lens

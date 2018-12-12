@@ -16,3 +16,7 @@ stack exec server -- --port 8080
 
 The executable expects a port number, this is so we can run it on Heroku
 or if we have something else running on port 80.
+
+## Swagger
+
+Swagger spec is available at `/swagger.json`

@@ -17,7 +17,7 @@ postReminder :: Reminder -> ClientM [WithId Reminder]
 deleteReminder :: Integer -> ClientM [WithId Reminder]
 putReminder :: Integer -> Reminder -> ClientM [WithId Reminder]
 getReminders :<|> postReminder :<|> deleteReminder :<|> putReminder
-  = client api
+  = client remindersApi
 
 listReminders :: String -> IO (Either ServantError [WithId Reminder])
 listReminders url
