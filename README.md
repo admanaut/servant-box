@@ -16,13 +16,25 @@ In this repo I want to create a very simple REST API using [servant-server](http
 And finally host the API and Swagger UI in Heroku.
 
 ## Servant server
-A REST API (unauthenticated) built with servant-server.
+A REST API built with servant-server.
 
 ## Servant client
 Using server-client we generate all API functions and package them under
-an easy to use library ready to be distributed to consumers.
+an easy to use library, ready to be distributed to consumers.
 
 ## Servant swagger
+We can generate swagger spec via the swagger executable or request it from the API
+via /swagger.json
+
+### Swagger UI
+
+Once we have access to the swagger spec we ca use Swagger UI to render it.
+
+*locally*
+`docker run -p 8081:8080 -e API_URL=http://localhost:8080/swagger.json swaggerapi/swagger-ui`
+
+*Heroku*
+
 TODO
 
 ## Servant quickcheck
