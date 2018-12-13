@@ -46,5 +46,34 @@ Run `stack build` to build all packages in this project.
 
 See README files in each package for more info.
 
-### Run
-TODO - a top level command that orchestrates all packages.
+## Heroku
+
+*prereq: Heroku account and CLI*
+
+We are going to use Heroku to host our API and Swwagger UI publicly.
+
+The easiest way to get Heroku to run our Haskell binary is using Docker
+with an image provided by FPCO. see *Dockerfile*
+
+Because we're using Docker we need to login to Heroku's container registry first:
+
+```
+heroku container:login
+```
+
+We need to build the image and push it to Heroku
+
+```
+heroku container:push web --app servant-box-admanaut
+
+```
+
+Last step, release the app
+```
+heroku container:release web --app servant-box-admanaut
+```
+
+Optional, inspect logs
+```
+heroku logs --app servant-box-admanaut
+```
