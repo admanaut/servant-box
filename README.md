@@ -35,7 +35,7 @@ Once we have access to the swagger spec we ca use Swagger UI to render it.
 
 *Heroku*
 
-TODO
+see https://github.com/admanaut/servant-box-swagger
 
 ## Servant quickcheck
 TODO
@@ -50,30 +50,28 @@ See README files in each package for more info.
 
 *prereq: Heroku account and CLI*
 
-We are going to use Heroku to host our API and Swwagger UI publicly.
+We are going to use Heroku to host our API publicly.
 
-The easiest way to get Heroku to run our Haskell binary is using Docker
+The easiest way to get Heroku to run our Haskell binary is using Docker containers
 with an image provided by FPCO. see *Dockerfile*
 
-Because we're using Docker we need to login to Heroku's container registry first:
+Heroku recently added spport for building images on Heroku's server via a heroku.yaml file,
+and we're going to use it.
+
+see *heroku.yaml*
+
+First we need to change the stack of our app to container
 
 ```
-heroku container:login
+heroku stack:set container
 ```
 
-We need to build the image and push it to Heroku
+And all we need to do is push to heroku master
 
 ```
-heroku container:push web --app servant-box-admanaut
-
+git push heroku master
 ```
 
-Last step, release the app
-```
-heroku container:release web --app servant-box-admanaut
-```
+Heroku will read heroku.yaml file, build an image based on Dokerfile and run it.
 
-Optional, inspect logs
-```
-heroku logs --app servant-box-admanaut
-```
+The API is available at: https://servant-box-admanaut.herokuapp.com
