@@ -2,10 +2,11 @@
 
 module Server where
 
-import Reminders
-import Swagger
-import Network.Wai
-import Servant
+import           Network.Wai
+import qualified Network.Wai.Handler.Warp as Warp
+import           Reminders
+import           Servant
+import           Swagger
 
 type API = RemindersAPI :<|> SwaggerAPI
 
@@ -17,3 +18,6 @@ server = reminders :<|> swagger
 
 app :: Application
 app = serve api server
+
+run :: Int -> IO ()
+run port = Warp.run port app

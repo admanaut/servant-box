@@ -4,3 +4,12 @@ packages:
 - location: lib/server
 - location: lib/client
 - location: lib/swagger
+- location: lib/tests
+
+extra-deps:
+- servant-quickcheck-0.0.7.3
+- hspec-2.5.9
+- hspec-core-2.5.9
+- hspec-discover-2.5.9
+- QuickCheck-2.12.6.1
+- aeson-lens-0.5.0.0
