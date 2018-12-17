@@ -93,7 +93,9 @@ reminders = getReminders
 
     postReminder :: Reminder -> Handler [WithId Reminder]
     postReminder r
-      = pure (r' : defaultReminders)
+      = if repeat r == Yearly -- testing only
+        then throwError err400
+        else pure (r' : defaultReminders)
       where
         r' = WithId nextId r
         nextId =
