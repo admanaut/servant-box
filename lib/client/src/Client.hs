@@ -12,21 +12,21 @@ import Servant.Client
 import Server
 
 -- | Use Server.client to generate client functions.
-getReminders :: ClientM [WithId Reminder]
-postReminder :: Reminder -> ClientM [WithId Reminder]
-deleteReminder :: Integer -> ClientM [WithId Reminder]
-putReminder :: Integer -> Reminder -> ClientM [WithId Reminder]
+getReminders :: ClientM AllReminders
+postReminder :: Reminder -> ClientM AllReminders
+deleteReminder :: Integer -> ClientM AllReminders
+putReminder :: Integer -> Reminder -> ClientM AllReminders
 getReminders :<|> postReminder :<|> deleteReminder :<|> putReminder
   = client remindersApi
 
-listReminders :: String -> IO (Either ServantError [WithId Reminder])
+listReminders :: String -> IO (Either ServantError AllReminders)
 listReminders url
   = mkEnv url >>= runClientM getReminders
 
 createReminder
   :: String
   -> Reminder
-  -> IO (Either ServantError [WithId Reminder])
+  -> IO (Either ServantError AllReminders)
 
 createReminder url r
   = mkEnv url >>= runClientM (postReminder r)
@@ -34,7 +34,7 @@ createReminder url r
 removeReminder
   :: String
   -> Integer
-  -> IO (Either ServantError [WithId Reminder])
+  -> IO (Either ServantError AllReminders)
 
 removeReminder url rid
   = mkEnv url >>= runClientM (deleteReminder rid)
@@ -43,7 +43,7 @@ updateReminder
   :: String
   -> Integer
   -> Reminder
-  -> IO (Either ServantError [WithId Reminder])
+  -> IO (Either ServantError AllReminders)
 
 updateReminder url rid r
   = mkEnv url >>= runClientM (putReminder rid r)

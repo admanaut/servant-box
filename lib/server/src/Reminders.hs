@@ -49,6 +49,13 @@ data WithId a
       }
   deriving (Eq, Show, Generic)
 
+-- | Wrapper for API responses, so that all responses
+-- encode to JSON Object, which apparently is best practice.
+newtype WithValues a = WithValues { values :: a } deriving (Show, Generic)
+
+-- | Just a type synonym for API response.
+type AllReminders = WithValues [WithId Reminder]
+
 defaultReminders :: [WithId Reminder]
 defaultReminders =
   [  WithId 1001 $
@@ -73,10 +80,10 @@ defaultReminders =
 -- {{{ API
 
 type RemindersAPI
-  =    "reminders" :> Get '[JSON] [WithId Reminder]
-  :<|> "reminder"  :> ReqBody '[JSON] Reminder :> Post '[JSON] [WithId Reminder]
-  :<|> "reminder"  :> Capture "id" Integer :> Delete '[JSON] [WithId Reminder]
-  :<|> "reminder"  :> Capture "id" Integer :> ReqBody '[JSON] Reminder :> Put '[JSON] [WithId Reminder]
+  =    "reminders" :> Get '[JSON] AllReminders
+  :<|> "reminder"  :> ReqBody '[JSON] Reminder :> Post '[JSON] AllReminders
+  :<|> "reminder"  :> Capture "id" Integer :> Delete '[JSON] AllReminders
+  :<|> "reminder"  :> Capture "id" Integer :> ReqBody '[JSON] Reminder :> Put '[JSON] AllReminders
 
 remindersApi :: Proxy RemindersAPI
 remindersApi = Proxy
@@ -88,14 +95,15 @@ reminders = getReminders
   :<|> putReminder
 
   where
-    getReminders :: Handler [WithId Reminder]
-    getReminders = pure defaultReminders
+    withValues = pure . WithValues
+    getReminders :: Handler AllReminders
+    getReminders = withValues defaultReminders
 
-    postReminder :: Reminder -> Handler [WithId Reminder]
+    postReminder :: Reminder -> Handler AllReminders
     postReminder r
       = if repeat r == Yearly -- testing only
         then throwError err400
-        else pure (r' : defaultReminders)
+        else withValues (r' : defaultReminders)
       where
         r' = WithId nextId r
         nextId =
@@ -103,22 +111,22 @@ reminders = getReminders
           $ maximum
           $ (\(WithId id _) -> id) <$> defaultReminders
 
-    deleteReminder :: Integer -> Handler [WithId Reminder]
+    deleteReminder :: Integer -> Handler AllReminders
     deleteReminder id
       = case splitRemindersAt id of
          (_, [])      -> throwError err404
-         (xs, (_:ys)) -> pure (xs <> ys)
+         (xs, (_:ys)) -> withValues (xs <> ys)
 
     findReminder :: Integer -> Maybe (WithId Reminder)
     findReminder id
       = headMay $
         dropWhile (\(WithId id' _) -> id' /= id) defaultReminders
 
-    putReminder :: Integer -> Reminder -> Handler [WithId Reminder]
+    putReminder :: Integer -> Reminder -> Handler AllReminders
     putReminder id r
       = case splitRemindersAt id of
           (_, []) -> throwError err404
-          (xs, (r':ys)) -> pure (xs <> [updateReminder r'] <> ys)
+          (xs, (r':ys)) -> withValues (xs <> [updateReminder r'] <> ys)
       where
         updateReminder (WithId id r')
           = WithId id $
@@ -141,3 +149,4 @@ deriveJSON defaultOptions ''Repeat
 deriveJSON defaultOptions ''Priority
 deriveJSON defaultOptions ''Reminder
 deriveJSON defaultOptions ''WithId
+deriveJSON defaultOptions ''WithValues

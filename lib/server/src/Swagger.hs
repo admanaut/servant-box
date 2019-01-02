@@ -19,6 +19,7 @@ instance SW.ToSchema Priority
 instance SW.ToSchema Repeat
 instance SW.ToSchema Reminder
 instance SW.ToSchema a => SW.ToSchema (WithId a)
+instance SW.ToSchema a => SW.ToSchema (WithValues a)
 
 -- | API for serving @swagger.json@.
 type SwaggerAPI = "swagger.json" :> Get '[JSON] (CorsHeader SW.Swagger)
