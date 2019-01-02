@@ -23,7 +23,7 @@ Using server-client we generate all API functions and package them under
 an easy to use library, ready to be distributed to consumers.
 
 ## Servant swagger
-We can generate swagger spec via the swagger executable or request it from the API
+We generate swagger spec via the swagger executable or request it from the API
 via /swagger.json
 
 ### Swagger UI
@@ -38,7 +38,8 @@ Once we have access to the swagger spec we ca use Swagger UI to render it.
 see https://github.com/admanaut/servant-box-swagger
 
 ## Servant quickcheck
-TODO
+We build hspec `Spec`s using predicates froms servant-quickcheck to test our API
+against best practices.
 
 ## Build
 

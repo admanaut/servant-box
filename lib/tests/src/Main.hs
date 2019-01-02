@@ -14,6 +14,8 @@ import           Data.Time.Clock as T
 import qualified Servant.QuickCheck as SQ
 import           Test.Hspec
 import qualified Test.QuickCheck as TQ
+import           Test.QuickCheck.Instances.Text
+import           Test.QuickCheck.Instances.Time
 
 import qualified Client as Client
 import           Prelude hiding (repeat)
@@ -59,6 +61,34 @@ businessLogicSpec =
         , note     = Nothing
         }
     rr = r { repeat = NoRepeat }
+
+instance TQ.Arbitrary Repeat where
+  arbitrary =
+    TQ.oneof
+      [ pure Daily,
+        pure Weekly,
+        pure Monthly,
+        pure Yearly,
+        pure NoRepeat
+      ]
+
+instance TQ.Arbitrary Reminder where
+  arbitrary =
+        Reminder
+    <$> TQ.arbitrary
+    <*> TQ.arbitrary
+    <*> TQ.arbitrary
+    <*> TQ.arbitrary
+    <*> TQ.arbitrary
+
+instance TQ.Arbitrary Priority where
+  arbitrary =
+    TQ.oneof
+      [ pure Low
+      , pure Medium
+      , pure High
+      , pure NoPriority
+      ]
 
 -- | Properties that ought to hold true of the entire API
 servantQuickcheckSpec :: Spec

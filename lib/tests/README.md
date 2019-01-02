@@ -1,6 +1,6 @@
 # Tests
 
-We're using `hspec` `hspec-wai` `QuickCheck` and `servant-quickcheck`
+We're using `hspec` `hspec-wai` `QuickCheck` and `servant-quickcheck` to test the Reminders API.
 
 ## Run
 

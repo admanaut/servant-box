@@ -31,6 +31,7 @@ executable tests
                      , hspec
                      , hspec-wai
                      , QuickCheck
+                     , quickcheck-instances
                      , aeson
                      , aeson-lens
                      , text
