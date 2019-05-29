@@ -13,6 +13,8 @@ In this repo I want to create a very simple REST API using [servant-server](http
 
 * [servant-quickcheck](http://hackage.haskell.org/package/servant-quickcheck) to test the API
 
+* [servant-mock](https://hackage.haskell.org/package/servant-mock-0.8.5) to run a mock server
+
 And finally host the API and Swagger UI in Heroku.
 
 ## Servant server

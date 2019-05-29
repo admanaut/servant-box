@@ -5,6 +5,7 @@ packages:
 - location: lib/client
 - location: lib/swagger
 - location: lib/tests
+- location: lib/mock
 
 extra-deps:
 - servant-quickcheck-0.0.7.3
